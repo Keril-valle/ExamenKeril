@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { CarPart } from "../types/CarPart";
 import CardCars from "./CardCars";
+import BuscarCars from "./BuscarCars";
 const xAccessKey =import.meta.env["VITE_X-Access-Key"] ?? import.meta.env.VITE_X_ACCESS_KEY;
 
 
@@ -20,6 +21,7 @@ const normalizeArticles = (data: unknown): CarPart[] => {
 
 const CarsParst = () => {
   const [jsonBIN, setJsonBIN] = useState<CarPart[]>([]);
+  const [searchResults, setSearchResults] = useState<CarPart[] | null>(null);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
 
@@ -39,6 +41,7 @@ const CarsParst = () => {
       .then((data) => {
         const articles = normalizeArticles(data);
         setJsonBIN(articles);
+        setSearchResults(null);
         setVisibleCount(PAGE_SIZE);
       })
       .catch(() => {
@@ -48,24 +51,28 @@ const CarsParst = () => {
 
   const currentStart = Math.max(0, visibleCount - PAGE_SIZE);
   const visibleItems = jsonBIN.slice(currentStart, visibleCount);
+  const itemsToRender = searchResults ?? visibleItems;
+  const isSearchMode = searchResults !== null;
   const canShowMore = jsonBIN.length > PAGE_SIZE && visibleCount < jsonBIN.length;
-const showLess = jsonBIN.length > PAGE_SIZE && visibleCount < jsonBIN.length;
+  const showLess = visibleCount > PAGE_SIZE;
 
   return (
     <div className="cars-page">
       <h1>Repuestos de Carro</h1>
+      <BuscarCars items={jsonBIN} onSearch={setSearchResults} />
+     <br /> <br /> <br /> <br />
       
       <div className="products-grid">
-        {visibleItems.map((product) => (
+        {itemsToRender.map((product) => (
           <CardCars key={product.articleId} card={product} />
         ))}
       </div>
-{showLess && (
+{showLess && !isSearchMode && (
         <button onClick={() => setVisibleCount((prev) => Math.max(PAGE_SIZE, prev - PAGE_SIZE))}>
           ver menos
         </button>
       )}
-      {canShowMore && (
+      {canShowMore && !isSearchMode && (
         <button onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}>
           ver más
         </button>
