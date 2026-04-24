@@ -3,8 +3,8 @@
 const Footer = () => {
   return (
     <footer>
-      <h1>Este es el pie de página</h1>
-      <h2>© 2026 Todos los derechos reservados a <strong>Keril Valle Vasquez</strong></h2>
+      <h4>Este es el pie de página</h4>
+      <h5>© 2026 Todos los derechos reservados a <strong>Keril Valle Vasquez</strong></h5>
     </footer>
   )
 }
