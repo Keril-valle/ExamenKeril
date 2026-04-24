@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { CarPart } from "../types/CarPart";
 import CardCars from "./CardCars";
 import BuscarCars from "./BuscarCars";
-const xAccessKey =import.meta.env["VITE_X-Access-Key"] ?? import.meta.env.VITE_X_ACCESS_KEY;
+const xAccessKey = import.meta.env.VITE_X_ACCESS_KEY;
 
 
 
