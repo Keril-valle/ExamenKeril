@@ -20,6 +20,8 @@ const normalizeArticles = (data: unknown): CarPart[] => {
 };
 
 const CarsParst = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [jsonBIN, setJsonBIN] = useState<CarPart[]>([]);
   const [searchResults, setSearchResults] = useState<CarPart[] | null>(null);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -43,9 +45,15 @@ const CarsParst = () => {
         setJsonBIN(articles);
         setSearchResults(null);
         setVisibleCount(PAGE_SIZE);
+        setError(null);
+        setIsLoading(false);
       })
-      .catch(() => {
+      .catch((err: unknown) => {
+        const message =
+          err instanceof Error ? err.message : "No se pudieron cargar los repuestos.";
+        setError(message);
         setJsonBIN([]);
+        setIsLoading(false);
       });
   }, []);
 
@@ -55,6 +63,18 @@ const CarsParst = () => {
   const isSearchMode = searchResults !== null;
   const canShowMore = jsonBIN.length > PAGE_SIZE && visibleCount < jsonBIN.length;
   const showLess = visibleCount > PAGE_SIZE;
+
+  if (isLoading) {
+    return <p>Cargando repuestos...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
+  if (jsonBIN.length === 0) {
+    return <p>No hay repuestos disponibles.</p>;
+  }
 
   return (
     <div className="cars-page">
